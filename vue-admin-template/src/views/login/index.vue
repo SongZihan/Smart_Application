@@ -128,7 +128,7 @@ export default {
       })
     },
     to_registered() {
-      this.$router.push({ path: this.redirect || '/registered' })
+      this.$router.push('/registered')
     }
   }
 }

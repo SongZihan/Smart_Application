@@ -1,4 +1,4 @@
-import { login, getInfo } from '@/api/user'
+import { login, getInfo, registered } from '@/api/user'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 import { resetRouter } from '@/router'
 
@@ -40,6 +40,16 @@ const actions = {
         commit('SET_TOKEN', data.jwt_token)
         // 浏览器cookie
         setToken(data.jwt_token)
+        resolve()
+      }).catch(error => {
+        reject(error)
+      })
+    })
+  },
+  registered({ commit }, userInfo) {
+    const { username, password, invite_code } = userInfo
+    return new Promise((resolve, reject) => {
+      registered({ username: username.trim(), password: password, register_key: invite_code.trim() }).then(response => {
         resolve()
       }).catch(error => {
         reject(error)

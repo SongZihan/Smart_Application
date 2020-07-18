@@ -12,7 +12,7 @@
         </span>
         <el-input
           ref="username"
-          v-model="loginForm.username"
+          v-model="registeredForm.username"
           placeholder="Username"
           name="username"
           type="text"
@@ -28,7 +28,7 @@
         <el-input
           :key="passwordType"
           ref="password"
-          v-model="loginForm.password"
+          v-model="registeredForm.password"
           :type="passwordType"
           placeholder="Password"
           name="password"
@@ -45,16 +45,13 @@
         </span>
         <el-input
           :key="passwordType"
-          ref="password"
-          v-model="loginForm.repeat_password"
+          ref="repeat_password"
+          v-model="registeredForm.repeat_password"
           :type="passwordType"
-          placeholder="Password"
+          placeholder="Repeat password"
           name="repeat_password"
           tabindex="2"
         />
-        <span class="show-pwd" @click="showPwd">
-          <svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'" />
-        </span>
       </el-form-item>
 
       <el-form-item prop="invite_code">
@@ -64,9 +61,9 @@
         <el-input
           :key="passwordType"
           ref="invite_code"
-          v-model="loginForm.invite_code"
+          v-model="registeredForm.invite_code"
           type="text"
-          placeholder=""
+          placeholder="Invite code"
           name="invite_code"
           tabindex="2"
         />
@@ -77,7 +74,7 @@
           <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleRegistered">Registered</el-button>
         </el-col>
         <el-col :span="8">
-          <el-button style="width: 100%">Back</el-button>
+          <el-button style="width: 100%" @click="back">Back</el-button>
         </el-col>
       </el-row>
 
@@ -111,23 +108,31 @@ export default {
       }
     }
     const validateRepeatPassword = (rule, value, callback) => {
-      if (value !== this.password) {
+      if (value !== this.registeredForm.password) {
         callback(new Error('Passwords entered are inconsistent'))
       } else {
         callback()
       }
     }
+    const validateInviteCode = (rule, value, callback) => {
+      if (!value) {
+        callback(new Error('Please enter invite code'))
+      } else {
+        callback()
+      }
+    }
     return {
-      loginForm: {
+      registeredForm: {
         username: '',
         password: '',
         repeat_password: '',
         invite_code: ''
       },
-      loginRules: {
+      registeredRules: {
         username: [{ required: true, trigger: 'blur', validator: validateUsername }],
         password: [{ required: true, trigger: 'blur', validator: validatePassword }],
-        repeat_password: [{ required: true, trigger: 'blur', validator: validateRepeatPassword }]
+        repeat_password: [{ required: true, trigger: 'blur', validator: validateRepeatPassword }],
+        invite_code: [{ required: true, trigger: 'blur', validator: validateInviteCode }]
       },
       loading: false,
       passwordType: 'password',
@@ -157,8 +162,8 @@ export default {
       this.$refs.registeredForm.validate(valid => {
         if (valid) {
           this.loading = true
-          this.$store.dispatch('user/login', this.loginForm).then(() => {
-            this.$router.push({ path: this.redirect || '/' })
+          this.$store.dispatch('user/registered', this.registeredForm).then(() => {
+            this.$router.push('/login')
             this.loading = false
           }).catch(() => {
             this.loading = false
@@ -168,6 +173,9 @@ export default {
           return false
         }
       })
+    },
+    back() {
+      this.$router.push('/login')
     }
   }
 }

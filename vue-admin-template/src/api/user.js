@@ -7,6 +7,13 @@ export function login(data) {
     data
   })
 }
+export function registered(data) {
+  return request({
+    url: '/auth/registered',
+    method: 'post',
+    data
+  })
+}
 
 export function getInfo() {
   return request({

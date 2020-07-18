@@ -58,9 +58,16 @@ export const constantRoutes = [
       name: 'Dashboard',
       component: () => import('@/views/dashboard/index'),
       meta: { title: 'Dashboard', icon: 'dashboard' }
-    }]
+    },
+    {
+      path: 'device/:id',
+      name: 'Device',
+      component: () => import('@/views/dashboard/file_upload/index'),
+      meta: { title: 'Upload file' },
+      hidden: true
+    }
+    ]
   },
-
   {
     path: '/example',
     component: Layout,
