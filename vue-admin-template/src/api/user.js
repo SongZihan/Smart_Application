@@ -23,6 +23,14 @@ export function getInfo() {
   })
 }
 
+export function getIdentifyCode() {
+  return request({
+    url: '/auth/identify_code',
+    method: 'get',
+    responseType: 'arraybuffer'
+  })
+}
+
 // export function logout() {
 //   return request({
 //     url: '/vue-admin-template/user/logout',

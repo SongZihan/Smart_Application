@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 import datetime
+
+from flask import session
 from flask_wtf import Form
 from wtforms import TextField, StringField, PasswordField, ValidationError
 from wtforms.validators import DataRequired, Length, EqualTo
@@ -15,10 +17,15 @@ class Login(Form):
     """
     username = StringField("username", validators=[DataRequired(message="请输入用户名"), Length(6, 25)])
     password = PasswordField("password", validators=[DataRequired(message="请输入密码"), Length(6, 25)])
+    identify_code = StringField("identify_code",validators=[DataRequired(message="请输入验证码"), Length(4,4)])
 
     def validate_username(self, field):
         if not User.query.filter_by(login_name=field.data).first():
             raise ValidationError('没有找到用户名')
+
+    def validate_identify_code(self,field):
+        if field.data != session['identify_code']:
+            raise ValidationError('验证码错误')
 
 
 class Register(Form):

@@ -42,7 +42,10 @@ service.interceptors.response.use(
    */
   response => {
     const res = response.data
-    console.log(response)
+    // 图片验证码响应例外，不做下列判断
+    if (response.headers['content-type'] === 'image/jpeg') {
+      return res
+    }
     // if the custom code is not 20000, it is judged as an error.
     if (res.code !== 200) {
       Message({

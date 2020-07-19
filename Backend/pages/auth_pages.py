@@ -1,13 +1,17 @@
-from flask import Blueprint
+from flask import Blueprint, session
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from application import db
 from libs.auth import jwt_login
 from libs.date_helper import getCurrentTime
-from libs.return_data_helper import return_JSON
+from libs.return_data_helper import return_JSON, return_jpeg
 from libs.wtf_helper import Register, Login
 from models.user import User
 
+from captcha.image import ImageCaptcha
+import random
+import string
+from io import BytesIO
 
 
 auth = Blueprint("auth", __name__)
@@ -60,3 +64,19 @@ def registered():
         # 返回表单验证中的错误信息
         return return_JSON(401,str(form.errors))
 
+@auth.route('/identify_code',methods=["GET"])
+def identify_code():
+    image = ImageCaptcha(100, 40)  # 图片宽 160 高 60
+    characters = string.digits  # 验证码组成，数字
+    char_num = 4  # 验证码字符个数
+
+    captcha_str = ''.join(random.sample(characters, char_num))
+    img = image.generate_image(captcha_str)
+    # 图片存储在内存中
+    buf = BytesIO()
+    img.save(buf,'JPEG')
+    img_file = buf.getvalue()
+    # 添加验证码到session中
+    session['identify_code'] = captcha_str
+
+    return return_jpeg(img_file)

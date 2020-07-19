@@ -1,4 +1,4 @@
-from flask import jsonify
+from flask import jsonify, make_response
 
 
 def return_JSON(code,msg,data={}):
@@ -7,4 +7,8 @@ def return_JSON(code,msg,data={}):
     """
     return jsonify({"code":code,"msg":msg,"data":data})
 
+def return_jpeg(jpeg_file):
+    response = make_response(jpeg_file)
+    response.headers['Content-Type'] = 'image/jpeg'
+    return response
 
